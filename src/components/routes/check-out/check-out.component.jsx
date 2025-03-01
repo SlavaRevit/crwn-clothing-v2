@@ -1,36 +1,47 @@
-import './check-out.component.scss';
-import {useContext} from "react";
-import {CartContext} from "../../../context/cart-context";
+import './check-out.styles.scss';
+import {useContext, useEffect} from "react";
+import {CartContext} from "../../../context/cart.context";
+import './check-out.styles.scss';
+import CheckOutItem from "../../check-out-item/check-out-item.component";
 
 const CheckOut = () => {
-	const {cartItems, addItemToCart} = useContext(CartContext);
+	const {setIsCartOpen, cartItems, addItemToCart, deleteCartItem} = useContext(
+		CartContext);
 
+	useEffect(() => {
+		setIsCartOpen(false);
+	}, [])
 
-	// const handleMinusQuantity = (item) => {
-	// 	return cartItems.map(cartItem => cartItem.id === item.id ?
-	// 		{...cartItem, quantity: cartItem.quantity + 1} : cartItem)
-	// }
-	// const handlePlusQuantity = (item) => {
-	// 	return cartItems.map(
-	// 		i => i.id === item.id ? {...i, quantity: i.quantity + 1} : item)
-	// }
+	const total = cartItems.reduce(
+		(acc, item) => acc + item.price * item.quantity, 0);
+
 
 	return (
-		<div>
-			{cartItems.map(item => (
-				<div key={item.id}>
-					<img src={item.imageUrl} alt={`${item.name}`}/>
-					<span>{item.name}</span>
-					<div>
-						<button onClick={() => addItemToCart(item, 'minus')}>-</button>
-						{item.quantity}
-						<button onClick={() => addItemToCart(item, 'plus')}>+</button>
-					</div>
-					<span>price</span>
-					<button>X</button>
+		<div className="checkout-container">
+			<div className="checkout-header">
+				<div className="header-block">
+					<span>Product</span>
 				</div>
-			))}
+				<div className="header-block">
+					<span>Description</span>
+				</div>
+				<div className="header-block">
+					<span>Quantity</span>
+				</div>
+				<div className="header-block">
+					<span>Price</span>
+				</div>
+				<div className="header-block">
+					<span>Remove</span>
+				</div>
+			</div>
 
+			{cartItems.map(item => {
+				return (
+					<CheckOutItem ket={item.id} cartItem={item}/>
+				)
+			})}
+			<span className="total">Total {total}</span>
 		</div>
 	)
 }

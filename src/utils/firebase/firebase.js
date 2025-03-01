@@ -10,7 +10,16 @@ import {
 	onAuthStateChanged,
 } from 'firebase/auth';
 
-import {getFirestore, setDoc, getDoc, doc} from 'firebase/firestore';
+import {
+	getFirestore,
+	setDoc,
+	getDoc,
+	doc,
+	collection,
+	writeBatch,
+	query,
+	getDocs,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyDT-Y69D88HX0ni_gEK8gL_K7U43ueDvxo',
@@ -31,14 +40,32 @@ googleProvider.setCustomParameters({
 export const auth = getAuth();
 export const db = getFirestore();
 
-export const signInWithGooglePopup = () => signInWithPopup(auth,
-	googleProvider);
 
-export const signInWithEmailAndPass = async (email,
-																						 password) => await signInWithEmailAndPassword(
-	auth, email, password);
+export const addCollectionAndDocuments = async (collectionKey,
+																								objectsToAdd) => {
+	const collectionRef = collection(db, collectionKey);
+	const batch = writeBatch(db);
+	objectsToAdd.forEach((object) => {
+		const docRef = doc(collectionRef, object.title.toLowerCase());
+		batch.set(docRef, object);
+	})
+	await batch.commit();
+	console.log('done');
+}
 
-export const signOutUser = async () => await signOut(auth);
+export const getCategoriesAndDocuments = async () => {
+	const collectionRef = collection(db, 'categories');
+	const q = query(collectionRef);
+	const querySnapshot = await getDocs(q);
+
+	const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+		const {title, items} = docSnapshot.data();
+		acc[title.toLowerCase()] = items;
+		return acc;
+	}, {})
+
+	return categoryMap;
+}
 
 
 export const createUserDocumentFromAuth = async (
@@ -67,6 +94,15 @@ export const createUserDocumentFromAuth = async (
 
 	return userDocRef;
 };
+
+export const signOutUser = async () => await signOut(auth);
+
+export const signInWithGooglePopup = () => signInWithPopup(auth,
+	googleProvider);
+
+export const signInWithEmailAndPass = async (email,
+																						 password) => await signInWithEmailAndPassword(
+	auth, email, password);
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
 	if (!email || !password) return;
