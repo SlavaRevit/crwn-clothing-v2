@@ -42,6 +42,7 @@ const SignUpForm = () => {
 			);
 
 			await createUserDocumentFromAuth(user, {displayName});
+
 			resetFormFields();
 		} catch (err) {
 			console.log(`user creation encountered an error`, err);

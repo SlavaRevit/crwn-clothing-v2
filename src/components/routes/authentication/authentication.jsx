@@ -5,6 +5,7 @@ import {
 import SignUpForm from "../../sign-up-form/sign-up-form.component";
 import SignInForm from "../../sign-in-form/sign-in-form.component";
 
+import './authentication.component.scss';
 
 const Authentication = () => {
 
@@ -14,8 +15,8 @@ const Authentication = () => {
 	}
 
 	return (
-		<div>
-			<h1>Sign in PAGE</h1>
+		<div className="authentication-container">
+			{/*<h1>Sign in PAGE</h1>*/}
 			{/*<button onClick={logGoogleUser}>Sign in with Google Account</button>*/}
 			<SignInForm/>
 			<SignUpForm/>

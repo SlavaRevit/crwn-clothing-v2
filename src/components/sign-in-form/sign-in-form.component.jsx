@@ -1,12 +1,12 @@
+import './sign-in-form.component.scss';
+
 import FormInput from "../form-input/form-input.component";
 import Button from "../Button/Button.component";
 import {
-	createUserDocumentFromAuth,
 	signInWithEmailAndPass, signInWithGooglePopup
 } from "../../utils/firebase/firebase";
-import {useState} from "react";
 
-import './sign-in-form.component.scss';
+import {useState} from "react";
 
 const defaultFormField = {
 	email: '',
@@ -27,7 +27,6 @@ const SignInForm = () => {
 
 		try {
 			await signInWithEmailAndPass(email, password);
-
 			resetFormFields();
 		} catch (err) {
 			console.log(`user creation encountered an error`, err);
@@ -35,10 +34,8 @@ const SignInForm = () => {
 	};
 
 	const signInWitGoogle = async () => {
-		const {user} = await signInWithGooglePopup();
-		await createUserDocumentFromAuth(user);
+		await signInWithGooglePopup();
 	}
-
 
 	const handleChange = async (event) => {
 		const {name, value} = event.target;
@@ -47,7 +44,10 @@ const SignInForm = () => {
 
 	return (
 		<div className="sign-in-container">
+			<h2>Already have an account?</h2>
+			<p>Sign in with Email and Password</p>
 			<form action='' onSubmit={handleSubmit}>
+
 				<FormInput
 					label="Email"
 					type='email'
@@ -64,6 +64,7 @@ const SignInForm = () => {
 					name='password'
 					value={password}
 				/>
+
 				<div className="buttons-container">
 					<Button
 						type='submit'
@@ -72,12 +73,14 @@ const SignInForm = () => {
 						Sign in
 					</Button>
 					<Button
+						type="button"
 						onClick={signInWitGoogle}
 						buttonType="google"
 					>
 						Sign in with google
 					</Button>
 				</div>
+
 			</form>
 		</div>
 	)
